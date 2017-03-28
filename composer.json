@@ -1,0 +1,23 @@
+{
+    "name": "tarifhaus/doctrine-nullable-embeddable",
+    "description": "A workaround implementation for nullable embeddables in Doctrine entities.",
+    "license": "MIT",
+
+    "autoload": {
+        "psr-4": { "Tarifhaus\\Doctrine\\": "" },
+        "exclude-from-classmap": [ "/Tests/" ]
+    },
+
+    "autoload-dev": {
+        "psr-4": { "Tarifhaus\\Tests\\Doctrine\\ORM\\": "Tests" }
+    },
+
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.0",
+        "symfony/property-access": "^3.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    }
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://phpunit.de/documentation.html -->
+<phpunit
+        backupGlobals               = "false"
+        backupStaticAttributes      = "false"
+        colors                      = "true"
+        convertErrorsToExceptions   = "true"
+        convertNoticesToExceptions  = "true"
+        convertWarningsToExceptions = "true"
+        processIsolation            = "false"
+        stopOnFailure               = "true"
+        stopOnError                 = "true"
+        syntaxCheck                 = "false"
+        forceCoversAnnotation       = "true"
+        bootstrap                   = "./vendor/autoload.php">
+
+    <testsuites>
+        <testsuite>
+            <directory>./Tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>.</directory>
+            <exclude>
+                <directory>./Tests</directory>
+                <directory suffix="Interface.php">./*</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
