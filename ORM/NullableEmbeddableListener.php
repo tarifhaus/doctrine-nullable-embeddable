@@ -43,7 +43,11 @@ final class NullableEmbeddableListener
             }
 
             if ($embeddable->isNull()) {
-                $this->propertyAccessor->setValue($object, $propertyPath, null);
+                $nullator = \Closure::bind(function ($property) {
+                    $this->{$property} = null;
+                }, $object, get_class($object));
+
+                $nullator($propertyPath);
             }
         }
     }
