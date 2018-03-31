@@ -14,6 +14,7 @@ final class NullableEmbeddableListener
 {
     private $propertyAccessor;
     private $propertyMap = [];
+    private $useClosure = false;
 
     public function __construct(PropertyAccessorInterface $propertyAccessor)
     {
@@ -27,6 +28,11 @@ final class NullableEmbeddableListener
         }
 
         $this->propertyMap[$entity][] = $propertyPath;
+    }
+
+    public function useNullatorClosure(bool $useClosure)
+    {
+        $this->useClosure = $useClosure;
     }
 
     public function postLoad($object)
@@ -43,12 +49,26 @@ final class NullableEmbeddableListener
             }
 
             if ($embeddable->isNull()) {
-                $nullator = \Closure::bind(function ($property) {
-                    $this->{$property} = null;
-                }, $object, get_class($object));
-
-                $nullator($propertyPath);
+                $this->setNull($object, $propertyPath);
             }
         }
+    }
+
+    private function setNull($object, string $propertyPath)
+    {
+        if ($this->useClosure) {
+            $this->setNullUsingClosure($object, $propertyPath);
+        } else {
+            $this->propertyAccessor->setValue($object, $propertyPath, null);
+        }
+    }
+
+    private function setNullUsingClosure($object, string $propertyPath)
+    {
+        $nullator = \Closure::bind(function ($property) {
+            $this->{$property} = null;
+        }, $object, get_class($object));
+
+        $nullator($propertyPath);
     }
 }

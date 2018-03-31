@@ -6,6 +6,7 @@ namespace Tarifhaus\Tests\Doctrine\ORM;
 
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Tarifhaus\Doctrine\ORM\NullableEmbeddableListener;
+use Tarifhaus\Doctrine\Tests\EntityWithoutSetter;
 
 /**
  * @covers \Tarifhaus\Doctrine\ORM\NullableEmbeddableListener
@@ -71,5 +72,18 @@ final class NullableEmbeddableListenerTest extends \PHPUnit_Framework_TestCase
         $this->listener->postLoad($object);
 
         static::assertSame($embeddable, $object->property);
+    }
+
+    public function test_it_uses_bound_closure_if_configured()
+    {
+        $embeddable = new NullableEmbeddable(true);
+        $object = new EntityWithoutSetter($embeddable);
+
+        $this->listener->useNullatorClosure(true);
+
+        $this->listener->addMapping(get_class($object), 'property');
+        $this->listener->postLoad($object);
+
+        static::assertNull($object->getProperty());
     }
 }
