@@ -16,9 +16,10 @@ final class NullableEmbeddableListener
     private $propertyMap = [];
     private $useClosure = false;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, bool $useClosure = false)
     {
         $this->propertyAccessor = $propertyAccessor;
+        $this->useClosure = $useClosure;
     }
 
     public function addMapping(string $entity, string $propertyPath)
