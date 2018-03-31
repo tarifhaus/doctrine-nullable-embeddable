@@ -2,16 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Tarifhaus\Tests\Doctrine\ORM;
+namespace Tarifhaus\Tests\Doctrine\ORM\NullableEmbeddable;
 
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use PHPUnit\Framework\TestCase;
+use Tarifhaus\Doctrine\ORM\NullableEmbeddableListenerFactory;
 use Tarifhaus\Doctrine\ORM\NullableEmbeddableListener;
-use Tarifhaus\Doctrine\Tests\EntityWithoutSetter;
+use Tarifhaus\Tests\Doctrine\ORM\NullableEmbeddable;
 
 /**
+ * @covers \Tarifhaus\Doctrine\ORM\NullableEmbeddable\PropertyAccessor
  * @covers \Tarifhaus\Doctrine\ORM\NullableEmbeddableListener
+ * @covers \Tarifhaus\Doctrine\ORM\NullableEmbeddableListenerFactory
  */
-final class NullableEmbeddableListenerTest extends \PHPUnit_Framework_TestCase
+final class NullableEmbeddableListenerTest extends TestCase
 {
     /**
      * @var NullableEmbeddableListener
@@ -20,7 +23,7 @@ final class NullableEmbeddableListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->listener = new NullableEmbeddableListener(new PropertyAccessor());
+        $this->listener = NullableEmbeddableListenerFactory::createWithPropertyAccessor();
     }
 
     public function test_it_replaces_nullable_embeddable_with_null()
@@ -72,18 +75,5 @@ final class NullableEmbeddableListenerTest extends \PHPUnit_Framework_TestCase
         $this->listener->postLoad($object);
 
         static::assertSame($embeddable, $object->property);
-    }
-
-    public function test_it_uses_bound_closure_if_configured()
-    {
-        $embeddable = new NullableEmbeddable(true);
-        $object = new EntityWithoutSetter($embeddable);
-
-        $this->listener->useNullatorClosure(true);
-
-        $this->listener->addMapping(get_class($object), 'property');
-        $this->listener->postLoad($object);
-
-        static::assertNull($object->getProperty());
     }
 }
