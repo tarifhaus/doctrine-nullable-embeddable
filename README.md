@@ -55,6 +55,7 @@ services:
         class: Tarifhaus\Doctrine\ORM\NullableEmbeddableListener
         arguments:
             - '@property_accessor'
+            - true                 # prefere usage of closure instead of property accessor. This will change in further releases.
         calls:
             - ['addMapping', ['Thengine\Domain\User\Model\UserProfile', 'address']]
         tags:
