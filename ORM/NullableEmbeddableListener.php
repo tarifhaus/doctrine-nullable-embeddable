@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tarifhaus\Doctrine\ORM;
 
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Tarifhaus\Doctrine\ORM\NullableEmbeddable\NullatorInterface;
+use Tarifhaus\Doctrine\ORM\NullableEmbeddable\EvaluatorInterface;
 
 /**
  * @see https://github.com/doctrine/doctrine2/issues/4568
@@ -12,13 +13,18 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  */
 final class NullableEmbeddableListener
 {
-    private $propertyAccessor;
-    private $propertyMap = [];
-    private $useClosure = false;
+    private $evaluator;
+    private $nullator;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor)
+    /**
+     * @var string[][]
+     */
+    private $propertyMap = [];
+
+    public function __construct(EvaluatorInterface $evaluator, NullatorInterface $nullator)
     {
-        $this->propertyAccessor = $propertyAccessor;
+        $this->evaluator = $evaluator;
+        $this->nullator = $nullator;
     }
 
     public function addMapping(string $entity, string $propertyPath)
@@ -30,45 +36,18 @@ final class NullableEmbeddableListener
         $this->propertyMap[$entity][] = $propertyPath;
     }
 
-    public function useNullatorClosure(bool $useClosure)
-    {
-        $this->useClosure = $useClosure;
-    }
-
     public function postLoad($object)
     {
-        if (empty($this->propertyMap[get_class($object)])) {
+        $entity = get_class($object);
+        if (empty($this->propertyMap[$entity])) {
             return;
         }
 
-        $propertyPaths = $this->propertyMap[get_class($object)];
-        foreach ($propertyPaths as $propertyPath) {
-            $embeddable = $this->propertyAccessor->getValue($object, $propertyPath);
-            if (!$embeddable instanceof NullableEmbeddableInterface) {
-                continue;
-            }
-
-            if ($embeddable->isNull()) {
-                $this->setNull($object, $propertyPath);
+        $entries = $this->propertyMap[$entity];
+        foreach ($entries as $property) {
+            if ($this->evaluator->isNull($object, $property)) {
+                $this->nullator->setNull($object, $property);
             }
         }
-    }
-
-    private function setNull($object, string $propertyPath)
-    {
-        if ($this->useClosure) {
-            $this->setNullUsingClosure($object, $propertyPath);
-        } else {
-            $this->propertyAccessor->setValue($object, $propertyPath, null);
-        }
-    }
-
-    private function setNullUsingClosure($object, string $propertyPath)
-    {
-        $nullator = \Closure::bind(function ($property) {
-            $this->{$property} = null;
-        }, $object, get_class($object));
-
-        $nullator($propertyPath);
     }
 }
