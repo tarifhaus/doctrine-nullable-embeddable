@@ -6,6 +6,7 @@ namespace Tarifhaus\Doctrine\ORM;
 
 use Tarifhaus\Doctrine\ORM\NullableEmbeddable\ClosureNullator;
 use Tarifhaus\Doctrine\ORM\NullableEmbeddable\PropertyAccessor;
+use Tarifhaus\Doctrine\ORM\NullableEmbeddable\PropertyAccessorReflectionNullator;
 
 final class NullableEmbeddableListenerFactory
 {
@@ -20,6 +21,14 @@ final class NullableEmbeddableListenerFactory
     {
         $evaluator = PropertyAccessor::createWithDefault();
         $nullator = new ClosureNullator();
+
+        return new NullableEmbeddableListener($evaluator, $nullator);
+    }
+
+    public static function createWithPropertyAccessorReflectionNullator(): NullableEmbeddableListener
+    {
+        $evaluator = PropertyAccessor::createWithDefault();
+        $nullator = PropertyAccessorReflectionNullator::createWithDefault();
 
         return new NullableEmbeddableListener($evaluator, $nullator);
     }
