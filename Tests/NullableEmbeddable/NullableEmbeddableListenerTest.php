@@ -21,7 +21,7 @@ final class NullableEmbeddableListenerTest extends TestCase
      */
     private $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->listener = NullableEmbeddableListenerFactory::createWithPropertyAccessor();
     }
