@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!-- https://phpunit.de/documentation.html -->
 <phpunit
-        backupGlobals               = "false"
-        backupStaticAttributes      = "false"
-        colors                      = "true"
-        convertErrorsToExceptions   = "true"
-        convertNoticesToExceptions  = "true"
-        convertWarningsToExceptions = "true"
-        processIsolation            = "false"
-        stopOnFailure               = "true"
-        stopOnError                 = "true"
-        syntaxCheck                 = "false"
-        forceCoversAnnotation       = "true"
-        bootstrap                   = "./vendor/autoload.php">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    stopOnFailure="true"
+    stopOnError="true"
+    forceCoversAnnotation="true"
+    bootstrap="./vendor/autoload.php">
+  <testsuites>
+    <testsuite name="default">
+      <directory>./Tests</directory>
+    </testsuite>
+  </testsuites>
 
-    <testsuites>
-        <testsuite>
-            <directory>./Tests</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>.</directory>
-            <exclude>
-                <directory>./Tests</directory>
-                <directory suffix="Interface.php">./*</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+  <filter>
+    <whitelist>
+      <directory>.</directory>
+      <exclude>
+        <directory>./Tests</directory>
+        <directory suffix="Interface.php">./*</directory>
+      </exclude>
+    </whitelist>
+  </filter>
 </phpunit>
